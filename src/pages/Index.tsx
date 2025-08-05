@@ -1,11 +1,14 @@
+import { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useNavigate } from "react-router-dom";
-import { Zap, Users, Shield, Settings, ArrowRight, Cpu, Terminal, MonitorSpeaker } from "lucide-react";
+import { Zap, Users, Shield, Settings, ArrowRight, Cpu, LogIn, UserPlus } from "lucide-react";
+import SplashScreen from "@/components/SplashScreen";
 
 const Index = () => {
   const navigate = useNavigate();
+  const [showSplash, setShowSplash] = useState(true);
 
   const features = [
     {
@@ -30,6 +33,10 @@ const Index = () => {
     }
   ];
 
+  if (showSplash) {
+    return <SplashScreen onComplete={() => setShowSplash(false)} />;
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20">
       {/* Hero Section */}
@@ -48,21 +55,21 @@ const Index = () => {
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
             <Button 
               size="lg" 
-              onClick={() => navigate('/setup')}
+              onClick={() => navigate('/auth')}
               className="flex items-center gap-2"
             >
-              <MonitorSpeaker className="h-5 w-5" />
-              Start GUI Setup
+              <LogIn className="h-5 w-5" />
+              Sign In
               <ArrowRight className="h-4 w-4" />
             </Button>
             <Button 
               variant="outline" 
               size="lg"
-              onClick={() => navigate('/setup?mode=cli')}
+              onClick={() => navigate('/auth')}
               className="flex items-center gap-2"
             >
-              <Terminal className="h-5 w-5" />
-              CLI Setup Guide
+              <UserPlus className="h-5 w-5" />
+              Create Account
             </Button>
           </div>
         </div>
@@ -82,20 +89,15 @@ const Index = () => {
           ))}
         </div>
 
-        {/* Quick Access */}
+        {/* Call to Action */}
         <div className="text-center">
-          <h2 className="text-2xl font-semibold mb-6">Quick Access</h2>
-          <div className="flex flex-wrap justify-center gap-4">
-            <Button variant="outline" onClick={() => navigate('/dashboard')}>
-              Project Dashboard
-            </Button>
-            <Button variant="outline" onClick={() => navigate('/team')}>
-              Team Management
-            </Button>
-            <Button variant="outline" onClick={() => navigate('/settings')}>
-              Project Settings
-            </Button>
-          </div>
+          <h2 className="text-2xl font-semibold mb-6">Ready to Get Started?</h2>
+          <p className="text-muted-foreground mb-6">
+            Join LogicLance today and streamline your ASIC design workflow
+          </p>
+          <Button size="lg" onClick={() => navigate('/auth')}>
+            Get Started Now
+          </Button>
         </div>
       </div>
     </div>
