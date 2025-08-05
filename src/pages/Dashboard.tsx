@@ -230,7 +230,11 @@ const Dashboard = () => {
               <CardDescription>Common tasks and operations</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="grid md:grid-cols-3 gap-4">
+              <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <Button variant="outline" className="h-20 flex-col" onClick={() => navigate('/setup')}>
+                  <Cpu className="h-6 w-6 mb-2" />
+                  New Project
+                </Button>
                 <Button variant="outline" className="h-20 flex-col">
                   <Play className="h-6 w-6 mb-2" />
                   Start New Flow

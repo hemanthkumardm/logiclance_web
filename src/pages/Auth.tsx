@@ -172,33 +172,6 @@ const Auth = () => {
                     Create Account
                   </Button>
                 </form>
-
-                {/* Setup Options */}
-                <div className="mt-6 pt-6 border-t">
-                  <p className="text-sm text-muted-foreground text-center mb-4">
-                    After creating your account, choose your setup method:
-                  </p>
-                  <div className="space-y-2">
-                    <Button 
-                      variant="outline" 
-                      className="w-full justify-start"
-                      onClick={() => navigate('/setup')}
-                      type="button"
-                    >
-                      <MonitorSpeaker className="h-4 w-4 mr-2" />
-                      Start GUI Setup
-                    </Button>
-                    <Button 
-                      variant="outline" 
-                      className="w-full justify-start"
-                      onClick={() => navigate('/setup?mode=cli')}
-                      type="button"
-                    >
-                      <Terminal className="h-4 w-4 mr-2" />
-                      CLI Setup Guide
-                    </Button>
-                  </div>
-                </div>
               </CardContent>
             </Card>
           </TabsContent>

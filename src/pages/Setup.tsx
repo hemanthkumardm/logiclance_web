@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -8,12 +8,14 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { useNavigate } from "react-router-dom";
-import { ArrowLeft, ArrowRight, Upload, Users, Settings, CheckCircle } from "lucide-react";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import { ArrowLeft, ArrowRight, Upload, Users, Settings, CheckCircle, MonitorSpeaker, Terminal } from "lucide-react";
 
 const Setup = () => {
   const navigate = useNavigate();
-  const [currentStep, setCurrentStep] = useState(1);
+  const [searchParams] = useSearchParams();
+  const [currentStep, setCurrentStep] = useState(0);
+  const [setupMode, setSetupMode] = useState<'gui' | 'cli' | null>(null);
   const [formData, setFormData] = useState({
     projectName: "",
     adminName: "",
@@ -27,7 +29,18 @@ const Setup = () => {
   });
 
   const totalSteps = 5;
-  const progress = (currentStep / totalSteps) * 100;
+  const progress = currentStep === 0 ? 0 : (currentStep / totalSteps) * 100;
+
+  useEffect(() => {
+    const mode = searchParams.get('mode');
+    if (mode === 'cli') {
+      setSetupMode('cli');
+      setCurrentStep(1);
+    } else if (mode === 'gui') {
+      setSetupMode('gui');
+      setCurrentStep(1);
+    }
+  }, [searchParams]);
 
   const edaTools = [
     { id: "cadence", name: "Cadence" },
@@ -36,7 +49,9 @@ const Setup = () => {
   ];
 
   const handleNext = () => {
-    if (currentStep < totalSteps) {
+    if (currentStep === 0) {
+      setCurrentStep(1);
+    } else if (currentStep < totalSteps) {
       setCurrentStep(currentStep + 1);
     } else {
       // Complete setup
@@ -45,7 +60,7 @@ const Setup = () => {
   };
 
   const handlePrevious = () => {
-    if (currentStep > 1) {
+    if (currentStep > 0) {
       setCurrentStep(currentStep - 1);
     }
   };
@@ -61,6 +76,58 @@ const Setup = () => {
 
   const renderStep = () => {
     switch (currentStep) {
+      case 0:
+        return (
+          <div className="space-y-6">
+            <div className="text-center mb-6">
+              <h2 className="text-2xl font-bold mb-2">Welcome to LogicLance Setup</h2>
+              <p className="text-muted-foreground">Choose your preferred setup method to get started</p>
+            </div>
+            
+            <div className="grid md:grid-cols-2 gap-4">
+              <Card 
+                className={`cursor-pointer transition-colors ${setupMode === 'gui' ? 'ring-2 ring-primary' : ''}`}
+                onClick={() => {
+                  setSetupMode('gui');
+                  setCurrentStep(1);
+                }}
+              >
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <MonitorSpeaker className="h-5 w-5" />
+                    GUI Setup
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-sm text-muted-foreground">
+                    Interactive graphical setup wizard with step-by-step guidance through all configuration options.
+                  </p>
+                </CardContent>
+              </Card>
+              
+              <Card 
+                className={`cursor-pointer transition-colors ${setupMode === 'cli' ? 'ring-2 ring-primary' : ''}`}
+                onClick={() => {
+                  setSetupMode('cli');
+                  setCurrentStep(1);
+                }}
+              >
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Terminal className="h-5 w-5" />
+                    CLI Setup Guide
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-sm text-muted-foreground">
+                    Terminal-based setup with command line instructions for automated project initialization.
+                  </p>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        );
+
       case 1:
         return (
           <div className="space-y-6">
@@ -351,7 +418,7 @@ const Setup = () => {
             <ArrowLeft className="h-4 w-4 mr-2" />
             Back to Home
           </Button>
-          <Badge variant="outline">Step {currentStep} of {totalSteps}</Badge>
+          {currentStep > 0 && <Badge variant="outline">Step {currentStep} of {totalSteps}</Badge>}
         </div>
 
         {/* Progress */}
@@ -370,10 +437,10 @@ const Setup = () => {
                 <Button
                   variant="outline"
                   onClick={handlePrevious}
-                  disabled={currentStep === 1}
+                  disabled={currentStep === 0}
                 >
                   <ArrowLeft className="h-4 w-4 mr-2" />
-                  Previous
+                  {currentStep === 1 ? 'Back to Setup Mode' : 'Previous'}
                 </Button>
                 
                 <Button onClick={handleNext}>
